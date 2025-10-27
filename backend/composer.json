@@ -1,0 +1,19 @@
+{
+    "name": "lu1s4raque/backend",
+    "description": "Base sistema",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Backend\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Arrow401",
+            "email": "130317752+TLArrow401@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    }
+}

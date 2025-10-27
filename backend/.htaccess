@@ -1,0 +1,8 @@
+RewriteEngine On
+RewriteBase /project/backend/
+# Redirige todas las peticiones que no sean archivos o directorios reales
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(config|src|api)/ - [F,L]
+RewriteRule ^(.*)$ public/index.php [QSA,L]
+
