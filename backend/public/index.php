@@ -9,7 +9,8 @@
   $Dotenv->load();
 
   /* Prueba server funciona */
-  echo "Servidor funcionando";
+  /*   echo "Servidor funcionando"; */
+/*   var_dump($_SERVER['REQUEST_URI']); */
 
   //Header de seguridad basicos
   header("X-Content-Type-Options: nosniff");
@@ -42,13 +43,13 @@
   }); */
 
   //Auto cargado de configuraciones
-/*   function loadConfig($file){
+  /* function loadConfig($file){
     $configPath = CONFIG_PATH . "/" . $file . ".php";
     return file_exists($configPath) ? require $configPath : [];
   } */
 
   // Cargar configuraciones globales
-/*   $dbConfig = loadConfig("db"); */
+  /*   $dbConfig = loadConfig("db"); */
 
   //Inicializacion de la base de datos
   try {
@@ -68,6 +69,9 @@
     exit();
   }
   
+  /* Cargar rutas y escucha de peticiones */
+  $router = require_once dirname(__DIR__) . "/src/Routes.php";
+  $router->resolve();
 
 
 ?>

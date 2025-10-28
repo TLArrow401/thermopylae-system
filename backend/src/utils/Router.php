@@ -19,9 +19,19 @@ class Router
 
   public function resolve() {
     $requestMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+    // Obtiene la URI de la solicitud
     $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
     $uri = rtrim($uri, '/');
-    if ($uri === '') $uri = '/';
+    if ($uri === '') {
+        $uri = '/';
+    }
+
+    // Elimina el subdirectorio del inicio de la URI
+    $basePath = '/Project/backend'; // Reemplaza por el subdirectorio de tu proyecto
+    if (str_starts_with($uri, $basePath)) {
+        $uri = substr($uri, strlen($basePath));
+    }
+
 
     foreach ($this->routes as $route) {
       if ($route['method'] !== $requestMethod) continue;
@@ -48,9 +58,13 @@ class Router
 
         // Llamar handler
         if (is_callable($route['handler'])) {
-          return call_user_func($route['handler'], $_REQUEST, $params);
+          $response = call_user_func($route['handler'], $_REQUEST, $params);
+          echo json_encode($response);
+          return;
         } elseif (is_array($route['handler']) && method_exists($route['handler'][0], $route['handler'][1])) {
-          return call_user_func($route['handler'], $_REQUEST, $params);
+          $response = call_user_func($route['handler'], $_REQUEST, $params);
+          echo json_encode($response);
+          return;
         } else {
           http_response_code(500);
           echo json_encode(['error' => 'Handler inválido']);
