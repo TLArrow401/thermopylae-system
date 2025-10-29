@@ -72,6 +72,4 @@
   /* Cargar rutas y escucha de peticiones */
   $router = require_once dirname(__DIR__) . "/src/Routes.php";
   $router->resolve();
-
-
 ?>

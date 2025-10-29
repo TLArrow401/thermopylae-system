@@ -2,60 +2,55 @@
 
 namespace Backend\Controllers;
 
-class TestController
-{
+use Backend\Models\TestModel;
+use Backend\Utils\Response;
+
+class TestController {
+
+  private TestModel $model;
+
+  public function __construct() {
+    $this->model = new TestModel();
+  }
+
+  // Listar
   public function index()
   {
-    return [
-      "success" => true,
-      "message" => "Ruta funcionando correctamente ✅"
-    ];
+    $tester = $this->model->getAll();
+    Response::json(200, $tester);
+    
   }
 
-  public function store($request, $params)
+  // Crear
+  public function testCreate($request, $params)
   {
     // Leer el body JSON enviado
-    $inputData = json_decode(file_get_contents("php://input"), true);
+    $testData = json_decode(file_get_contents("php://input"), true) ?: [];
+   
+    /* Logica de validaciones */
 
-    return [
-      "success" => true,
-      "message" => "Hola desde POST",
-      "data" => $inputData
-    ];
+    $createData = $this->model->create($testData);
+    Response::json(201, $createData);
   }
 
-  public function update($request, $params)
+  // Actualizar
+  public function testUpdate($request, $params)
   {
-    $inputData = json_decode(file_get_contents("php://input"), true);
-
-    return [
-      "success" => true,
-      "message" => "Recurso actualizado correctamente",
-      "id" => $params['id'] ?? null,
-      "updatedData" => $inputData
-    ];
+    $id = (int)($params['id'] ?? 0);
+    if ($id <= 0) return Response::json(400, 'Id invalido');
+    $testData = json_decode(file_get_contents('php://input'), true);
+    $updated = $this->model->update($id, $testData);
+    if (!$updated) return Response::error(404, 'Test no encontrado');
+    Response::json(200, $updated);
   }
 
-  public function show($request, $params)
+  // Buscar por id
+  public function showById($request, $params)
   {
-    $id = $params['id'] ?? null;
-
-    if (!$id) {
-      http_response_code(400);
-      return [
-        "success" => false,
-        "message" => "ID inválido o no proporcionado"
-      ];
-    }
-
-    return [
-      "success" => true,
-      "message" => "Recurso encontrado",
-      "data" => [
-        "id" => $id,
-        "nombre" => "Elemento de prueba",
-        "rol" => "Demo"
-      ]
-    ];
+    $id = (int)($params['id'] ?? 0);
+    if ($id <= 0) return Response::error(404, 'Id invalida');
+    $test = $this->model->find($id);
+    if (!$test) return Response::error(404, 'Test no encontrado');
+    Response::json(200, $test);
   }
 }
